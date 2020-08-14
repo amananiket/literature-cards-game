@@ -20,7 +20,7 @@ public enum Denomination {
         return notion;
     }
 
-    public boolean isHigherSet() {
+    public Boolean isHigherSet() {
         return notion > 7;
     }
 

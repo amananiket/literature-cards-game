@@ -7,5 +7,14 @@ import lombok.Data;
 
 @Data
 public class Declaration {
+    Suit declaredSuit;
+    Boolean isHigherSuit;
+    String gameId;
     Map<Player, List<Card>> declaration;
+    String playerAlias;
+    String teamAlias;
+
+    public Boolean isHigherSuit() {
+        return this.isHigherSuit;
+    }
 }

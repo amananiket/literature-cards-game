@@ -8,5 +8,4 @@ import lombok.Data;
 public class Game {
     List<Team> teams;
     String id;
-
 }

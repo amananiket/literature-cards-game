@@ -86,4 +86,8 @@ public class GameService {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Teams not balanced");
         }
     }
+
+    public List<Player> getPlayersList(String gameId) {
+        return null;
+    }
 }

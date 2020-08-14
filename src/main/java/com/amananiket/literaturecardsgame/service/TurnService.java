@@ -1,16 +1,24 @@
 package com.amananiket.literaturecardsgame.service;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.amananiket.literaturecardsgame.model.Card;
 import com.amananiket.literaturecardsgame.model.Declaration;
+import com.amananiket.literaturecardsgame.model.Player;
 import com.amananiket.literaturecardsgame.model.Suit;
 import com.amananiket.literaturecardsgame.model.Turn;
 
 @Service
 public class TurnService {
+
+    @Autowired
+    private GameService gameService;
 
     public boolean createTurn(Turn requestedTurn) {
 
@@ -60,6 +68,56 @@ public class TurnService {
     }
 
     public boolean createDeclaration(Declaration requestedDeclaration) {
-        return false;
+
+        //TODO: Check if it's the turn of the player/team who called the turn.
+
+        List<Player> playersList = gameService.getPlayersList(requestedDeclaration.getGameId());
+
+        boolean wrongDeclaration = false;
+
+        for (Map.Entry<Player, List<Card>> entry : requestedDeclaration.getDeclaration().entrySet()) {
+
+            for (Player targetPlayer : playersList) {
+                if (targetPlayer.getPlayerAlias().equals(entry.getKey().getPlayerAlias())) {
+                    List<Card> targetPlayerHand = targetPlayer.getHand();
+
+                    for (Card card : entry.getValue()) {
+
+                        if (! (card.getSuit().name().equals(requestedDeclaration.getDeclaredSuit().name())
+                                && card.getDenomination().isHigherSet().equals(requestedDeclaration.isHigherSuit()))) {
+                            // Card selected is from the same declared set.
+                            wrongDeclaration = true;
+                            break;
+                        }
+
+                        boolean cardMatch = false;
+
+                        for (Card targetCard : targetPlayerHand) {
+                            if (card.equals(targetCard)) {
+                                cardMatch = true;
+                                break;
+                            }
+                        }
+
+                        if (!cardMatch) {
+                            wrongDeclaration = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (wrongDeclaration) {
+                    break;
+                }
+            }
+
+            if (wrongDeclaration) {
+                break;
+            }
+        }
+
+        // TODO: Discard all cards from the declared set.
+
+        return !wrongDeclaration;
     }
 }
