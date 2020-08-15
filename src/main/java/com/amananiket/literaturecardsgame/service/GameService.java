@@ -17,6 +17,7 @@ import com.amananiket.literaturecardsgame.db.entity.PlayerEntity;
 import com.amananiket.literaturecardsgame.db.repository.CardRepository;
 import com.amananiket.literaturecardsgame.db.repository.GameRepository;
 import com.amananiket.literaturecardsgame.db.repository.PlayerRepository;
+import com.amananiket.literaturecardsgame.mapper.PlayerEntityMapper;
 import com.amananiket.literaturecardsgame.model.Card;
 import com.amananiket.literaturecardsgame.model.Denomination;
 import com.amananiket.literaturecardsgame.model.Game;
@@ -36,6 +37,9 @@ public class GameService {
 
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private PlayerEntityMapper playerEntityMapper;
 
     public String getGameId(String suggestion) {
         if (gameRepository.findByGameAliasAndActiveIsTrue(suggestion) != null) {
@@ -141,13 +145,11 @@ public class GameService {
     }
 
     private boolean isValidTeamSize(Team team) {
-        if (team.getPlayers().size() == 3 || team.getPlayers().size() == 4) {
-            return true;
-        }
-        return false;
+        return team.getPlayers().size() == 3 || team.getPlayers().size() == 4;
     }
 
-    public List<Player> getPlayersList(String gameId) {
-        return null;
+    public List<Player> getPlayersList(String gameAlias) {
+        GameEntity gameEntity = gameRepository.findByGameAliasAndActiveIsTrue(gameAlias);
+        return playerEntityMapper.mapPlayers(playerRepository.findAllByGameEntity(gameEntity));
     }
 }
