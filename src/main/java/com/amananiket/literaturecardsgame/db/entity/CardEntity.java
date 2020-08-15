@@ -11,12 +11,16 @@ import javax.persistence.Table;
 
 import com.amananiket.literaturecardsgame.model.Denomination;
 import com.amananiket.literaturecardsgame.model.Suit;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "cards")
 public class CardEntity {
     @Id

@@ -14,9 +14,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.amananiket.literaturecardsgame.db.entity.CardEntity;
 import com.amananiket.literaturecardsgame.db.entity.GameEntity;
 import com.amananiket.literaturecardsgame.db.entity.PlayerEntity;
+import com.amananiket.literaturecardsgame.db.entity.TeamEntity;
 import com.amananiket.literaturecardsgame.db.repository.CardRepository;
 import com.amananiket.literaturecardsgame.db.repository.GameRepository;
 import com.amananiket.literaturecardsgame.db.repository.PlayerRepository;
+import com.amananiket.literaturecardsgame.db.repository.TeamRepository;
+import com.amananiket.literaturecardsgame.mapper.GameEntityMapper;
 import com.amananiket.literaturecardsgame.mapper.PlayerEntityMapper;
 import com.amananiket.literaturecardsgame.model.Card;
 import com.amananiket.literaturecardsgame.model.Denomination;
@@ -24,6 +27,7 @@ import com.amananiket.literaturecardsgame.model.Game;
 import com.amananiket.literaturecardsgame.model.Player;
 import com.amananiket.literaturecardsgame.model.Suit;
 import com.amananiket.literaturecardsgame.model.Team;
+import com.amananiket.literaturecardsgame.model.TeamAlias;
 import org.apache.commons.lang3.RandomStringUtils;
 
 @Service
@@ -39,7 +43,13 @@ public class GameService {
     private CardRepository cardRepository;
 
     @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
     private PlayerEntityMapper playerEntityMapper;
+
+    @Autowired
+    private GameEntityMapper gameEntityMapper;
 
     public String getGameId(String suggestion) {
         if (gameRepository.findByGameAliasAndActiveIsTrue(suggestion) != null) {
@@ -48,7 +58,7 @@ public class GameService {
         return suggestion;
     }
 
-    public String createGame(Game requestedGame) {
+    public Game createGame(Game requestedGame) {
 
         validateGameConstraints(requestedGame);
 
@@ -67,6 +77,25 @@ public class GameService {
 
         GameEntity savedGame = gameRepository.save(gameEntity);
 
+        TeamEntity teamRedEntity = TeamEntity.builder()
+                .gameEntity(savedGame)
+                .teamAlias(TeamAlias.RED)
+                .createdTime(now)
+                .updatedTime(now)
+                .build();
+
+        TeamEntity savedTeamRed = teamRepository.save(teamRedEntity);
+
+        TeamEntity teamBlueEntity = TeamEntity.builder()
+                .gameEntity(savedGame)
+                .teamAlias(TeamAlias.BLUE)
+                .createdTime(now)
+                .updatedTime(now)
+                .build();
+
+        TeamEntity savedTeamBlue = teamRepository.save(teamBlueEntity);
+
+
         List<Player> playerList = new ArrayList<>();
         playerList.addAll(requestedGame.getTeamRed().getPlayers());
         playerList.addAll(requestedGame.getTeamBlue().getPlayers());
@@ -75,10 +104,15 @@ public class GameService {
             PlayerEntity playerEntity = PlayerEntity.builder()
                     .gameEntity(savedGame)
                     .playerAlias(player.getPlayerAlias())
-                    .teamAlias(player.getTeamAlias())
                     .createdTime(now)
                     .updatedTime(now)
                     .build();
+
+            if (player.getTeamAlias().name().equals(TeamAlias.RED.name())) {
+                playerEntity.setTeam(savedTeamRed);
+            } else {
+                playerEntity.setTeam(savedTeamBlue);
+            }
 
             playerRepository.save(playerEntity);
         }
@@ -130,7 +164,11 @@ public class GameService {
             player.setHand(hand);
         }
 
-        return playerList.get(random.nextInt(playerList.size())).getPlayerAlias();
+        Player activePlayer = playerList.get(random.nextInt(playerList.size()));
+        PlayerEntity activePlayerEntity = playerRepository.findByPlayerAliasAndGameEntity(activePlayer.getPlayerAlias(), savedGame);
+        savedGame.setActivePlayerEntity(activePlayerEntity);
+
+        return gameEntityMapper.mapGame(gameRepository.save(savedGame));
     }
 
     private void validateGameConstraints(Game requestedGame) {

@@ -28,15 +28,15 @@ public class PlayerEntityMapper {
         return playersList;
     }
 
-    private Player mapPlayer(PlayerEntity playerEntity) {
+    public Player mapPlayer(PlayerEntity playerEntity) {
         if (playerEntity == null) {
             return null;
         }
 
         return Player.builder()
                 .playerAlias(playerEntity.getPlayerAlias())
-                .hand(cardEntityMapper.mapCards(playerEntity.getHand())s)
-                .teamAlias(playerEntity.getTeamAlias())
+                .hand(cardEntityMapper.mapCards(playerEntity.getHand()))
+                .teamAlias(playerEntity.getTeam().getTeamAlias())
                 .build();
     }
 }

@@ -6,34 +6,31 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.amananiket.literaturecardsgame.model.TeamAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @Builder
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "games")
-public class GameEntity {
-
+@Table(name = "teams")
+public class TeamEntity {
     @Id
     @GeneratedValue
     private long id;
-    private String gameAlias;
-    private boolean isActive;
-    @OneToOne
-    private PlayerEntity activePlayerEntity;
     @OneToMany
-    private List<TeamEntity> teams;
-    private int teamRedScore;
-    private int teamBlueScore;
+    private List<PlayerEntity> players;
+    private TeamAlias teamAlias;
+    @ManyToOne
+    private GameEntity gameEntity;
     private Timestamp createdTime;
     private Timestamp updatedTime;
 }

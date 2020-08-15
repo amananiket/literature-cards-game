@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.amananiket.literaturecardsgame.db.entity.CardEntity;
-import com.amananiket.literaturecardsgame.db.entity.PlayerEntity;
 import com.amananiket.literaturecardsgame.model.Card;
-import com.amananiket.literaturecardsgame.model.Player;
 
 @Component
 public class CardEntityMapper {

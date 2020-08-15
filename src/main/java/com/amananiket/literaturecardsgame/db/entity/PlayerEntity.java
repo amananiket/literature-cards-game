@@ -10,13 +10,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.amananiket.literaturecardsgame.model.TeamAlias;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "players")
 public class PlayerEntity {
 
@@ -24,7 +27,8 @@ public class PlayerEntity {
     @GeneratedValue
     private long id;
     private String playerAlias;
-    private TeamAlias teamAlias;
+    @ManyToOne
+    private TeamEntity team;
     @OneToMany
     private List<CardEntity> hand;
     @ManyToOne
