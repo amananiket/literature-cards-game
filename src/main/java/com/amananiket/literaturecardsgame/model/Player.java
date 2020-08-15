@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class Player {
     String playerAlias;
-    String teamAlias;
+    TeamAlias teamAlias;
     List<Card> hand;
 
-    public Player(String playerAlias, String teamAlias) {
+    public Player(String playerAlias, TeamAlias teamAlias) {
         this.playerAlias = playerAlias;
         this.teamAlias = teamAlias;
     }

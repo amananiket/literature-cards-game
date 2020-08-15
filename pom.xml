@@ -11,8 +11,8 @@
 	<groupId>com.amananiket</groupId>
 	<artifactId>literature-cards-game</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>literature-cards-game</name>
-	<description>Literature Cards game engine</description>
+	<name>literature-cards-gameEntity</name>
+	<description>Literature Cards gameEntity engine</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -28,11 +28,19 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- PostgreSQL -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.11</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

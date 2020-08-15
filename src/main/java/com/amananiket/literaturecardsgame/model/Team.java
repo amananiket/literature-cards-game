@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class Team {
     List<Player> players;
-    String teamAlias;
+    TeamAlias teamAlias;
 }
